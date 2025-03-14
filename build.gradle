@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.ryuu'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    String lombokVersion = '1.18.30'
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    String junitVersion = '5.10.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+}
+
+test {
+    useJUnitPlatform()
+}
