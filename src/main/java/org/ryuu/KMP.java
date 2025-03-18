@@ -4,70 +4,49 @@ package org.ryuu;
  * <a href="https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm"></a>
  */
 public class KMP {
-    // KMP 算法
     public int search(String text, String pattern) {
-        int textLen = text.length();
-        int patternLen = pattern.length();
-
-        if (patternLen == 0) {
+        if (pattern.isEmpty()) {
             return 0;
         }
 
-        // 计算模式字符串的部分匹配表
-        int[] lps = buildLPS(pattern);
-        int textIdx = 0;  // 文本指针
-        int patternIdx = 0;  // 模式字符串指针
+        int[] lps = buildLongestPrefixSuffix(pattern);
+        int textIndex = 0, patternIndex = 0;
 
-        while (textIdx < textLen) {
-            if (text.charAt(textIdx) == pattern.charAt(patternIdx)) {
-                textIdx++;
-                patternIdx++;
-            }
+        while (textIndex < text.length()) {
+            if (text.charAt(textIndex) == pattern.charAt(patternIndex)) {// 当前字符匹配成功
+                textIndex++;
+                patternIndex++;
 
-            // 匹配成功
-            if (patternIdx == patternLen) {
-                return textIdx - patternIdx;  // 找到匹配的位置
-            }
-
-            if (textIdx >= textLen || text.charAt(textIdx) == pattern.charAt(patternIdx)) {
-                continue;
-            }
-
-            // 如果模式串已经有部分匹配成功，则跳过已匹配的部分
-            if (patternIdx != 0) {
-                patternIdx = lps[patternIdx - 1];
-            } else {
-                textIdx++;
+                if (patternIndex == pattern.length()) {
+                    return textIndex - patternIndex;
+                }
+            } else if (patternIndex != 0) { // 部分匹配时回溯模式串指针
+                patternIndex = lps[patternIndex - 1];
+            } else { // 完全无匹配时移动文本指针
+                textIndex++;
             }
         }
 
         return -1;
     }
 
-    /**
-     * (LPS) Longest Prefix Suffix
-     */
-    private int[] buildLPS(String pattern) {
-        int patternLen = pattern.length();
-        int[] lps = new int[patternLen];
-        lps[0] = 0;  // 第一个字符没有前后缀
-        int len = 0; // 最长前后缀的长度
+    private int[] buildLongestPrefixSuffix(String pattern) {
+        int patternLength = pattern.length();
+        int[] longestPrefixSuffix = new int[patternLength];
+        int currentLongestLength = 0;
 
-        int i = 1;
-        while (i < patternLen) {
-            if (pattern.charAt(i) == pattern.charAt(len)) {
-                len++;
-                lps[i] = len;
-                i++;
-            } else if (len != 0) {
-                // 如果不匹配，len会回退到lps[len-1]位置
-                len = lps[len - 1];
+        for (int currentIndex = 1; currentIndex < patternLength; ) {
+            if (pattern.charAt(currentIndex) == pattern.charAt(currentLongestLength)) {
+                currentLongestLength++;
+                longestPrefixSuffix[currentIndex] = currentLongestLength;
+                currentIndex++;
+            } else if (currentLongestLength != 0) {
+                currentLongestLength = longestPrefixSuffix[currentLongestLength - 1];
             } else {
-                lps[i] = 0;
-                i++;
+                longestPrefixSuffix[currentIndex] = 0;
+                currentIndex++;
             }
         }
-
-        return lps;
+        return longestPrefixSuffix;
     }
 }

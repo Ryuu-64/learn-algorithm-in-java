@@ -9,10 +9,10 @@ class KMPTest {
     @Test
     void search() {
         KMP kmp = new KMP();
-        String text = "ABABDABACDABABCABAB";
-        String pattern = "ABABCABAB";
+        String text = "ABABDABAAACAAAAABCABAB";
+        String pattern = "AACAAA";
 
         int result = kmp.search(text, pattern);
-        assertEquals(10, result);
+        assertEquals(8, result);
     }
 }
